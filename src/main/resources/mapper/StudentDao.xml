@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 将namespace的值设置为DAO类对应的路径 -->
+<mapper namespace="com.nicole.mybatis.dao.StudentDao">
+
+    <resultMap id="student" type="student">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="create_at" jdbcType="BIGINT" property="createAt" />
+        <result column="update_at" jdbcType="BIGINT" property="updateAt" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="qq_number" jdbcType="VARCHAR" property="qqNumber" />
+        <result column="major" jdbcType="VARCHAR" property="major" />
+        <result column="estimated_time_enrollment" jdbcType="VARCHAR" property="estimatedTimeEnrollment" />
+        <result column="school" jdbcType="VARCHAR" property="school" />
+        <result column="student_id" jdbcType="VARCHAR" property="studentId" />
+        <result column="log_link" jdbcType="VARCHAR" property="logLink" />
+        <result column="mentor" jdbcType="VARCHAR" property="mentor" />
+        <result column="wishes" jdbcType="VARCHAR" property="wishes" />
+        <result column="recommended_from" jdbcType="VARCHAR" property="recommendedFrom" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, create_at, update_at, name, qq_number, major, estimated_time_enrollment, school,
+        student_id, log_link, mentor, wishes, recommended_from
+  </sql>
+    <!-- 查询数据条目 -->
+    <select id="getTotal" resultType="int">
+        SELECT COUNT(*) FROM student
+    </select>
+
+    <!-- 增加一条数据 -->
+    <!--<insert id="addStudent" parameterType="Student">
+        INSERT INTO student VALUES(NULL, #{studentId}, #{name})
+    </insert>-->
+
+    <!-- 删除一条数据 -->
+    <delete id="deleteStudent" parameterType="java.lang.Long">
+        DELETE FROM student WHERE id = #{id}
+    </delete>
+
+    <!-- 更新一条数据 -->
+<!--
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student SET student_id = #{student_id}, name = #{name}
+        WHERE id = #{id}
+    </update>
+-->
+
+    <!-- 查询一条数据 -->
+    <select id="getStudent" resultMap="student" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM student WHERE id = #{id}
+    </select>
+
+    <!-- 查询从start位置开始的count条数据-->
+    <select id="list" resultMap="student">
+        SELECT * FROM student ORDER BY student_id desc limit #{param1}, #{param2}
+    </select>
+</mapper>
