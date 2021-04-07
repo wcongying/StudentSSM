@@ -22,7 +22,7 @@ public class StudentMainTest {
 
             //true为自动提交事物  false手动提交事物 事物提交方法session.commit();
             session = factory.openSession(false);
-            session.close();
+//            session.close();
             StudentDao studentDao = (StudentDao) session.getMapper(StudentDao.class);
             StudentMainTest studentMainTest = new StudentMainTest();
             studentMainTest.mainTestGetStudent( studentDao );

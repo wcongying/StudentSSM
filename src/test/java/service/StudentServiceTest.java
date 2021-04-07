@@ -39,6 +39,19 @@ public class StudentServiceTest {
     @Test
     @Transactional
     @Rollback(true)
+    public void testAddStudent2() {
+        Student student = new Student();
+        student.setName("BrandNew2");
+        long time = System.currentTimeMillis();
+        student.setCreateAt(time);
+        student.setUpdateAt(time);
+        studentService.addStudent2(student);
+        System.out.println( student );
+    }
+
+    @Test
+    @Transactional
+    @Rollback(true)
     public void testDeleteStudent() {
         long id = 3L;
         studentService.deleteStudent(id);
@@ -75,7 +88,7 @@ public class StudentServiceTest {
     public void testInsertStudents() {
         Student student = new Student();
         long ids = 20;
-        int max = 120;
+        int max = 1020;
         long startTime = System.currentTimeMillis();
         student.setCreateAt(startTime);
         student.setUpdateAt(startTime);

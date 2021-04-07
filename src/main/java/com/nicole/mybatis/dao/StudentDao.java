@@ -27,6 +27,8 @@ public interface StudentDao {
     @Insert("INSERT INTO student (id,create_at,update_at,name) VALUES(#{id},#{createAt},#{updateAt},#{name})")
     long addStudent(Student student);
 
+    void addStudent2(Student student);
+
     void deleteStudent(long id);
     @Delete("DELETE FROM student WHERE id = #{id}")
     int deleteStudentBol(long id);

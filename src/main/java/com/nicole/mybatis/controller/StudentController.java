@@ -18,8 +18,6 @@ import java.util.List;
 /**
  * Student 控制器
  *
- * @author: @我没有三颗心脏
- * @create: 2018-04-23-下午 13:27
  */
 @Controller
 @RequestMapping("")
@@ -48,9 +46,6 @@ public class StudentController {
 
         student.setStudentId(studentID);
         student.setName(name);
-//        student.setAge(age);
-//        student.setSex(sex);
-//        student.setBirthday(birthday);
 
         studentService.addStudent(student);
 
@@ -118,9 +113,6 @@ public class StudentController {
         student.setId(id);
         student.setStudentId(studentId);
         student.setName(name);
-//        student.setAge(age);
-//        student.setSex(sex);
-//        student.setBirthday(birthday);
 
 //        studentService.updateStudentById(id);
         studentService.updateStudent(student);

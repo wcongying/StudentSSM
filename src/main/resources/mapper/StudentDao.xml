@@ -30,10 +30,15 @@
         SELECT COUNT(*) FROM student
     </select>
 
-    <!-- 增加一条数据 -->
-    <!--<insert id="addStudent" parameterType="Student">
-        INSERT INTO student VALUES(NULL, #{studentId}, #{name})
-    </insert>-->
+    <!-- 增加一条数据,自增id -->
+    <insert id="addStudent2" parameterType="Student">
+        INSERT INTO student
+        (create_at,update_at,name)
+        VALUES(#{createAt},#{updateAt},#{name})
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
 
     <!-- 删除一条数据 -->
     <delete id="deleteStudent" parameterType="java.lang.Long">

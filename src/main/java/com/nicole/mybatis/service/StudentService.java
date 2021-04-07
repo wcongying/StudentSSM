@@ -19,6 +19,12 @@ public interface StudentService {
     long addStudent(Student student);
 
     /**
+     * 增加一条数据
+     * @param student
+     */
+    void addStudent2(Student student);
+
+    /**
      * 删除一条数据
      * @param id
      */
