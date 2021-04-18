@@ -76,7 +76,7 @@ public class StudentController {
     }
 
     //使用model来保存数据到前台.@PathVariable获取路径参数。即url/{id}这种形式
-    @GetMapping(value = "/getbyid/{id}")
+    @RequestMapping (value = "/getbyid/{id}", method = RequestMethod.GET)
     public String getStudentById(Model model, @PathVariable(name = "id") long id){
         Student student = studentService.getStudent( id );
         model.addAttribute("student", student);
@@ -106,7 +106,7 @@ public class StudentController {
     }
 
     //@ResponseBody返回数据。@RequestBody接收
-    @RequestMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     @ResponseBody
     public Map<String, Object> updateStudent(@RequestBody Student student) {
         //student cannot be null
