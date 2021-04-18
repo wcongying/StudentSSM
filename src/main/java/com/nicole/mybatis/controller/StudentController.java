@@ -1,122 +1,121 @@
 package com.nicole.mybatis.controller;
 
 import com.nicole.mybatis.entity.Student;
+import com.nicole.mybatis.rest.Restful;
 import com.nicole.mybatis.service.StudentService;
-import com.nicole.mybatis.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Controller;
+
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 
 /**
  * Student 控制器
  *
  */
 @Controller
-@RequestMapping("")
+@RequestMapping("/student")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private MessageSource messageSource;
 
-    @RequestMapping("/addStudent")
-    public String addStudent(HttpServletRequest request, HttpServletResponse response) {
-
+    // request来保存数据
+    @RequestMapping("/jsontaglib")
+    public String testJsonTaglib(HttpServletRequest request, HttpServletResponse response) {
+        List<Student> students = new ArrayList<>();
         Student student = new Student();
-
-        String studentID = request.getParameter("student_id");
-        String name = request.getParameter("name");
-        int age = Integer.parseInt(request.getParameter("age"));
-        String sex = request.getParameter("sex");
-        Date birthday = null;
-        // String 类型按照 yyyy-MM-dd 的格式转换为 java.util.Date 类
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            birthday = simpleDateFormat.parse(request.getParameter("birthday"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        student.setStudentId(studentID);
-        student.setName(name);
-
-        studentService.addStudent(student);
-
-        return "redirect:listStudent";
-    }
-
-    @RequestMapping("/listStudent")
-    public String listStudent(HttpServletRequest request, HttpServletResponse response) {
-
-        // 获取分页参数
-        int start = 0;
-        int count = 10;
-
-        try {
-            start = Integer.parseInt(request.getParameter("page.start"));
-            count = Integer.parseInt(request.getParameter("page.count"));
-        } catch (Exception e) {
-        }
-
-        Page page = new Page(start, count);
-
-        List<Student> students = studentService.list(page.getStart(), page.getCount());
-        int total = studentService.getTotal();
-        page.setTotal(total);
-
+        //Only get one id this time, not much judge
+        long id = 0L;
+        if( request.getParameter("id") != null )
+            id = Long.parseLong(request.getParameter("id"));
+        student.setId(id);
+        student.setName("testingJsonTaglib");
+        student.setCreateAt(1289808L);
+        student.setUpdateAt(23979237923L);
+        student.setStudentId("stu"+id);
+        Student student2 = new Student();
+        id = 222L;
+        student2.setId(id);
+        student2.setName("testingJsonTaglib2");
+        student2.setCreateAt(12898082L);
+        student2.setUpdateAt(239792379232L);
+        student2.setStudentId("stu"+id);
+        students.add(student);
+        students.add(student2);
         request.setAttribute("students", students);
-        request.setAttribute("page", page);
 
-        return "listStudent";
+        return "jsontaglib";
     }
 
-    @RequestMapping("/deleteStudent")
-    public String deleteStudent(int id) {
-        studentService.deleteStudent(id);
-        return "redirect:listStudent";
+    //@ResponseBody回复。@RequestBody接收
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> addStudent(@RequestBody Student student){
+        //StringUtils judge blank
+        if (StringUtils.isBlank(student.getName())) {
+            return Restful.set(400, messageSource.getMessage("name.null", null, null));
+        } else {
+            //auto increased id
+            studentService.addStudent2(student);
+            return Restful.set(200,  messageSource.getMessage("addSuccess",
+                    null, null), student);
+        }
     }
 
-    @RequestMapping("/editStudent")
-    public ModelAndView editStudent(int id) {
-        ModelAndView mav = new ModelAndView("editStudent");
+    //使用model来保存数据到前台.@PathVariable获取路径参数。即url/{id}这种形式
+    @GetMapping(value = "/getbyid/{id}")
+    public String getStudentById(Model model, @PathVariable(name = "id") long id){
+        Student student = studentService.getStudent( id );
+        model.addAttribute("student", student);
+        return "model";
+    }
+
+    //@RequestParam gets id。获取查询参数。即url?id=这种形式. return restful
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Map<String, Object> deleteStudent(@RequestParam(value = "id", defaultValue="0") long id) {
+        System.out.println( id );
+        if (null == studentService.getStudent( id )) {
+            return Restful.set(400, messageSource.getMessage("id.null", null, null));
+        } else {
+            studentService.deleteStudent( id );
+            return Restful.set(200, "deletedSuccessfully");
+        }
+    }
+
+    @RequestMapping("/mav")
+    public ModelAndView mav(Long id) {
+        ModelAndView mav = new ModelAndView("model");
+        id = 1L;
         Student student = studentService.getStudent(id);
         mav.addObject("student", student);
         return mav;
     }
 
-    @RequestMapping("/updateStudent")
-    public String updateStudent(HttpServletRequest request, HttpServletResponse response) {
-
-        Student student = new Student();
-
-        long id = Long.parseLong(request.getParameter("id"));
-        String studentId = request.getParameter("student_id");
-        String name = request.getParameter("name");
-        int age = Integer.parseInt(request.getParameter("age"));
-        String sex = request.getParameter("sex");
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date birthday = null;
-        try {
-            birthday = simpleDateFormat.parse(request.getParameter("birthday"));
-        } catch (ParseException e) {
-            e.printStackTrace();
+    //@ResponseBody返回数据。@RequestBody接收
+    @RequestMapping("/update")
+    @ResponseBody
+    public Map<String, Object> updateStudent(@RequestBody Student student) {
+        //student cannot be null
+        if (null == studentService.getStudent(student.getId())) {
+            return Restful.set(400, messageSource.getMessage("id.null", null, null));
+        } else {
+            studentService.updateStudentById(student.getId());
+            return Restful.set(200, "updated successfully", student);
         }
-
-        student.setId(id);
-        student.setStudentId(studentId);
-        student.setName(name);
-
-//        studentService.updateStudentById(id);
-        studentService.updateStudent(student);
-        return "redirect:listStudent";
     }
 }
 
