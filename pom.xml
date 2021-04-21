@@ -205,13 +205,11 @@
       <version>2.10.0</version>
     </dependency>
     <!--json-taglib-->
-<!--    <dependency>
+    <dependency>
       <groupId>atg.taglib.json</groupId>
       <artifactId>json-taglib</artifactId>
       <version>0.4.1</version>
-    </dependency>-->
-    <!-- https://mvnrepository.com/artifact/taglibs/standard -->
-
+    </dependency>
     <dependency>
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
