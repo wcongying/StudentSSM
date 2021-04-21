@@ -87,7 +87,6 @@ public class StudentController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
     public Map<String, Object> deleteStudent(@RequestParam(value = "id", defaultValue="0") long id) {
-        System.out.println( id );
         if (null == studentService.getStudent( id )) {
             return Restful.set(400, messageSource.getMessage("id.null", null, null));
         } else {
