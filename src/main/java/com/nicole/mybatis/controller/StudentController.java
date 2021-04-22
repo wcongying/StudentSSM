@@ -70,7 +70,7 @@ public class StudentController {
         } else {
             //auto increased id
             studentService.addStudent2(student);
-            return Restful.set(200,  messageSource.getMessage("addSuccess",
+            return Restful.set(200,  messageSource.getMessage("operation.success",
                     null, null), student);
         }
     }
@@ -83,7 +83,7 @@ public class StudentController {
         return "model";
     }
 
-    //@RequestParam gets id。获取查询参数。即url?id=这种形式. return restful
+    //@RequestParam gets id。获取查询参数。即url?id=num&name=your_name这种形式. return restful
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ResponseBody
     public Map<String, Object> deleteStudent(@RequestParam(value = "id", defaultValue="0") long id) {
